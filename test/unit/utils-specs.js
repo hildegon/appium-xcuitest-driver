@@ -3,6 +3,9 @@ import {
   translateDeviceName,
   markSystemFilesForCleanup,
   isLocalHost,
+  isTvOs,
+  isVisionOs,
+  normalizePlatformName,
 } from '../../lib/utils';
 import {withMocks} from '@appium/test-support';
 import {fs} from 'appium/support';
@@ -159,6 +162,71 @@ describe('utils', function () {
     });
     it('should be false with ipv6 2001:db8:85a3:8d3:1319:8a2e:370:7348', function () {
       isLocalHost('http://[2001:db8:85a3:8d3:1319:8a2e:370:7348]').should.be.false;
+    });
+  });
+
+  describe('Platform detection', function () {
+    describe('isTvOs', function () {
+      it('should return true for tvOS', function () {
+        isTvOs('tvOS').should.be.true;
+      });
+      it('should return true for tvos (case insensitive)', function () {
+        isTvOs('tvos').should.be.true;
+      });
+      it('should return false for iOS', function () {
+        isTvOs('iOS').should.be.false;
+      });
+      it('should return false for visionOS', function () {
+        isTvOs('visionOS').should.be.false;
+      });
+      it('should return false for null', function () {
+        isTvOs(null).should.be.false;
+      });
+      it('should return false for undefined', function () {
+        isTvOs(undefined).should.be.false;
+      });
+    });
+
+    describe('isVisionOs', function () {
+      it('should return true for visionOS', function () {
+        isVisionOs('visionOS').should.be.true;
+      });
+      it('should return true for visionos (case insensitive)', function () {
+        isVisionOs('visionos').should.be.true;
+      });
+      it('should return false for iOS', function () {
+        isVisionOs('iOS').should.be.false;
+      });
+      it('should return false for tvOS', function () {
+        isVisionOs('tvOS').should.be.false;
+      });
+      it('should return false for null', function () {
+        isVisionOs(null).should.be.false;
+      });
+      it('should return false for undefined', function () {
+        isVisionOs(undefined).should.be.false;
+      });
+    });
+
+    describe('normalizePlatformName', function () {
+      it('should return tvOS for tvOS input', function () {
+        normalizePlatformName('tvOS').should.equal('tvOS');
+      });
+      it('should return visionOS for visionOS input', function () {
+        normalizePlatformName('visionOS').should.equal('visionOS');
+      });
+      it('should return iOS for iOS input', function () {
+        normalizePlatformName('iOS').should.equal('iOS');
+      });
+      it('should return iOS for unknown input', function () {
+        normalizePlatformName('unknown').should.equal('iOS');
+      });
+      it('should return iOS for null input', function () {
+        normalizePlatformName(null).should.equal('iOS');
+      });
+      it('should return iOS for undefined input', function () {
+        normalizePlatformName(undefined).should.equal('iOS');
+      });
     });
   });
 });
